@@ -7,6 +7,4 @@ logs/
 out/
 .idea/
 .DS_Store
-log-*.txt
-aws-docker-entrypoint.sh
-scripts/.credentials
+**/application-oauth.yml

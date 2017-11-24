@@ -1,0 +1,11 @@
+# application-oauth.yml not commited to git, expected format:
+#
+# twitter4j:
+#   debug: true
+#   oauth:
+#     consumer-key:
+#     consumer-secret:
+#     access-token:
+#     access-token-secret:
+#
+spring.profiles.include: 'oauth'
