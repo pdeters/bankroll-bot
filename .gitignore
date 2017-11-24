@@ -1,0 +1,12 @@
+.gradle/
+build/
+*.iml
+*.ipr
+*.iws
+logs/
+out/
+.idea/
+.DS_Store
+log-*.txt
+aws-docker-entrypoint.sh
+scripts/.credentials

@@ -1,0 +1,39 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.8.RELEASE")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+
+jar {
+    baseName = 'bankroll-bot'
+    version =  '0.1.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "org.codehaus.groovy:groovy-all:2.4.12"
+    compile 'org.springframework.boot:spring-boot-starter'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+bootRun {
+    // support passing -Dkey=value to bootRun task
+    systemProperties = System.properties
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.5.1'
+}
