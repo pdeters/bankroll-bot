@@ -2,6 +2,7 @@
 #
 # twitter4j:
 #   debug: true
+#   appId:
 #   oauth:
 #     consumer-key:
 #     consumer-secret:

@@ -4,6 +4,7 @@ import groovy.util.logging.Log4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import twitter4j.TwitterFactory
 import twitter4j.TwitterStream
 import twitter4j.TwitterStreamFactory
 import twitter4j.auth.AccessToken
@@ -35,8 +36,12 @@ class TwitterDaemon {
         ConfigurationBuilder cb = new ConfigurationBuilder()
         cb.setDebugEnabled(true).setOAuthConsumerKey(consumerKey).setOAuthConsumerSecret(consumerSecret)
 
-        TwitterStreamFactory twitterStreamFactory = new TwitterStreamFactory(cb.build());
+        TwitterStreamFactory twitterStreamFactory = new TwitterStreamFactory(cb.build())
         TwitterStream twitterStream = twitterStreamFactory.getInstance(new AccessToken(accessToken, accessTokenSecret))
+
+        // Give the StreamListener an authenticated Twitter API client (there has to be a better way)
+        streamListener.setTwitter(new TwitterFactory().getInstance(twitterStream.getAuthorization()))
+
         twitterStream.addListener(streamListener)
         twitterStream.user()
 

@@ -1,11 +1,13 @@
 package bot.bankroll
 
 import groovy.util.logging.Slf4j
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import twitter4j.DirectMessage
 import twitter4j.StallWarning
 import twitter4j.Status
 import twitter4j.StatusDeletionNotice
+import twitter4j.Twitter
 import twitter4j.User
 import twitter4j.UserList
 import twitter4j.UserStreamListener
@@ -14,17 +16,46 @@ import twitter4j.UserStreamListener
 @Component
 class BotAccountStreamListener implements UserStreamListener {
 
+    @Value('${twitter4j.appId}')
+    private Long appId
+
+    private Twitter twitter
+
+    void setTwitter(Twitter twitter) {
+        this.twitter = twitter
+    }
+
     /**
-     * Called when @BankrollBot receives a direct message.
+     * Called when @BankrollBot is notified of a direct message interaction.
      *
      * @param directMessage {@link DirectMessage}
      */
     @Override
     void onDirectMessage(DirectMessage directMessage) {
-        log.info "Direct message received\n${Util.toJson(directMessage)}"
+        if (directMessage.senderId != appId) {
+            log.info "Direct message received\n${Util.toJson(directMessage)}"
+        }
+    }
+
+    /**
+     * Called when an account follows @BankrollBot
+     *
+     * @param source User account that followed us
+     * @param followedUser Us
+     */
+    @Override
+    void onFollow(User source, User followedUser) {
+        if (source.id != appId) {
+            log.info "Follow notification received from @${source.screenName}, returning the favor."
+            twitter.createFriendship(source.id)
+            twitter.sendDirectMessage(source.id, 'Thanks for following @BankrollBot !\nMore to come.')
+        }
     }
 
     // No-ops
+
+    @Override
+    void onUnfollow(User source, User unfollowedUser) { }
 
     @Override
     void onDeletionNotice(long directMessageId, long userId) {
@@ -44,16 +75,6 @@ class BotAccountStreamListener implements UserStreamListener {
     @Override
     void onUnfavorite(User source, User target, Status unfavoritedStatus) {
         log.info 'onUnfavorite'
-    }
-
-    @Override
-    void onFollow(User source, User followedUser) {
-        log.info 'onFollow'
-    }
-
-    @Override
-    void onUnfollow(User source, User unfollowedUser) {
-        log.info 'onUnfollow'
     }
 
     @Override
